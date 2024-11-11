@@ -6,6 +6,7 @@ import IconO from "/assets/icon-o.svg";
 import Restart from "/assets/icon-restart.svg";
 import Button_Game from "../components/Button_Game";
 import Button_Score from "../components/Button_Score";
+import Announcement_Modal from "../components/Announcement_Modal";
 
 const Game_Page = () => {
   const location = useLocation();
@@ -126,7 +127,7 @@ const Game_Page = () => {
   const scoreLabels = getScoreLabels();
 
   return (
-    <div className="flex justify-center w-full min-h-screen border">
+    <div className="flex justify-center w-full min-h-screen">
       <div className="mt-[139px] flex flex-col w-[460px] h-[623px]">
         <div className="flex items-center justify-between w-full">
           <img src={logo} alt="logo icon" className="w-18 h-8" />
@@ -163,6 +164,9 @@ const Game_Page = () => {
             {winner === "TIE" ? "It's a Draw!" : `${winner} Wins!`}
           </div>
         )}
+        <div className="flex w-full h-screen items-center justify-center ">
+          <Announcement_Modal />
+        </div>
       </div>
     </div>
   );
