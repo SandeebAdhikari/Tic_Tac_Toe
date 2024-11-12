@@ -7,14 +7,18 @@ import Restart from "/assets/icon-restart.svg";
 import Button_Game from "../components/Button_Game";
 import Button_Score from "../components/Button_Score";
 import Announcement_Modal from "../components/Announcement_Modal";
+import Restart_Modal from "../components/Restart_Modal";
 
 const Game_Page = () => {
   const location = useLocation();
   const { selectedMark, mode } = location.state;
+
   const [board, setBoard] = useState(Array(9).fill(null));
   const [isXTurn, setIsXTurn] = useState(true);
   const [scores, setScores] = useState({ X: 0, O: 0, Ties: 0 });
   const [winner, setWinner] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [showRestartModal, setShowRestartModal] = useState(false);
 
   const playerMark = selectedMark;
   const cpuMark = selectedMark === "X" ? "O" : "X";
@@ -66,6 +70,19 @@ const Game_Page = () => {
     }
   };
 
+  const determineWinner = (gameWinner) => {
+    if (gameWinner === "TIE") {
+      setWinner("TIE");
+      if (mode === "CPU") {
+        setShowRestartModal(true);
+      }
+    } else if (mode === "CPU") {
+      setWinner(gameWinner === playerMark ? "YOU" : "CPU");
+    } else {
+      setWinner(currentPlayerMark === "X" ? "PLAYER 1" : "PLAYER 2");
+    }
+  };
+
   const updateScores = (gameWinner) => {
     if (gameWinner === "X" || gameWinner === "O") {
       setScores((prevScores) => ({
@@ -96,7 +113,8 @@ const Game_Page = () => {
     const gameWinner = checkWinner(newBoard);
     if (gameWinner) {
       updateScores(gameWinner);
-      setWinner(gameWinner);
+      determineWinner(gameWinner);
+      setShowModal(true);
     } else {
       setIsXTurn(true);
     }
@@ -106,21 +124,27 @@ const Game_Page = () => {
     setBoard(Array(9).fill(null));
     setIsXTurn(true);
     setWinner(null);
+    setShowModal(false);
+    setShowRestartModal(false);
+  };
+
+  const handleNextRound = () => {
+    handleRestart();
+  };
+
+  const handleQuit = () => {
+    window.location.reload();
   };
 
   const getScoreLabels = () => {
     if (mode === "CPU") {
-      if (selectedMark === "X") {
-        return ["X (YOU)", "TIES", "O (CPU)"];
-      } else {
-        return ["X (CPU)", "TIES", "O (YOU)"];
-      }
+      return selectedMark === "X"
+        ? ["X (YOU)", "TIES", "O (CPU)"]
+        : ["X (CPU)", "TIES", "O (YOU)"];
     } else {
-      if (selectedMark === "X") {
-        return ["X (P1)", "TIES", "O (P2)"];
-      } else {
-        return ["X (P2)", "TIES", "O (P1)"];
-      }
+      return selectedMark === "X"
+        ? ["X (P1)", "TIES", "O (P2)"]
+        : ["X (P2)", "TIES", "O (P1)"];
     }
   };
 
@@ -137,7 +161,7 @@ const Game_Page = () => {
           </button>
           <button
             onClick={handleRestart}
-            className="w-13 h-13 bg-silver rounded-[10px] p-4 shadow-inner-bottom4"
+            className="w-13 h-13 bg-silver rounded-[10px] p-4 shadow-inner-bottom4 hover:scale-105"
           >
             <img src={Restart} alt="restart icon" className="w-5 h-5" />
           </button>
@@ -159,14 +183,19 @@ const Game_Page = () => {
           <Button_Score label={scoreLabels[1]} score={scores.Ties} />
           <Button_Score label={scoreLabels[2]} score={scores.O} />
         </div>
-        {winner && (
-          <div className="text-center mt-4 text-[24px] font-bold text-yellow">
-            {winner === "TIE" ? "It's a Draw!" : `${winner} Wins!`}
-          </div>
+
+        {winner && !showRestartModal && (
+          <Announcement_Modal
+            winner={winner}
+            onNextRound={handleNextRound}
+            onQuit={handleQuit}
+            currentPlayerMark={currentPlayerMark}
+          />
         )}
-        <div className="flex w-full h-screen items-center justify-center ">
-          <Announcement_Modal />
-        </div>
+
+        {showRestartModal && (
+          <Restart_Modal onCancel={handleQuit} onRestart={handleRestart} />
+        )}
       </div>
     </div>
   );
