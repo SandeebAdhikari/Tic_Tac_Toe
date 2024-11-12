@@ -79,7 +79,7 @@ const Game_Page = () => {
       }
     } else if (mode === "CPU") {
       setWinner(gameWinner === playerMark ? "YOU" : "CPU");
-    } else {
+    } else if (mode === "PLAYER") {
       setWinner(currentPlayerMark === "X" ? "PLAYER 1" : "PLAYER 2");
     }
   };
@@ -190,7 +190,8 @@ const Game_Page = () => {
             winner={winner}
             onNextRound={handleNextRound}
             onQuit={handleQuit}
-            currentPlayerMark={currentPlayerMark}
+            selectedMark={selectedMark}
+            mode={mode}
           />
         )}
 

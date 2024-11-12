@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import IconX from "/assets/icon-x.svg";
 import IconO from "/assets/icon-o.svg";
 
-const Announcement_Modal = ({ winner, currentPlayerMark, onNextRound }) => {
+const Announcement_Modal = ({ winner, onNextRound, selectedMark, mode }) => {
   const navigate = useNavigate();
 
   const icon = winner === "X" || winner === "PLAYER 1" ? IconX : IconO;
@@ -13,11 +13,21 @@ const Announcement_Modal = ({ winner, currentPlayerMark, onNextRound }) => {
       : "text-lightYellow";
 
   const getAnnouncementText = () => {
-    if (winner === "CPU") return "OH NO, YOU LOST";
-    if (winner === "YOU") return "YOU WON";
-    if (winner === "PLAYER 1") return "PLAYER 1 WINS!";
-    if (winner === "PLAYER 2") return "PLAYER 2 WINS!";
-    if (winner === "TIE") return "ROUND TIED";
+    console.log("Winner:", winner, "Mode:", mode);
+    if (mode === "CPU") {
+      if (winner === "CPU") {
+        return "OH NO, YOU LOST";
+      } else {
+        return "YOU WON!";
+      }
+    } else if (mode === "PLAYER") {
+      if (winner === "X" && selectedMark === "X") return "PLAYER 1 WINS!";
+      if (winner === "O" && selectedMark === "O") return "PLAYER 1 WINS!";
+      if (winner === "X" && selectedMark === "O") return "PLAYER 2 WINS!";
+      if (winner === "O" && selectedMark === "X") return "PLAYER 2 WINS!";
+    }
+    if (winner === "TIE")
+      return <h1 className="font-bold text-[40px] text-silver">ROUND TIED</h1>;
     return "";
   };
 
