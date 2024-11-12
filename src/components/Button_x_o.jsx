@@ -27,9 +27,6 @@ const Button_x_o = ({ selectedMark, setSelectedMark }) => {
           onClick={() => handleToggle("O")}
         >
           <img src={IconO} alt="cross icon" className="w-8 h-8" />
-          {/* <div className="flex items-center justify-center w-8 h-8 bg-[#1A2A33] rounded-full">
-            <div className="w-3 h-3 bg-silver rounded-full"></div>
-          </div> */}
         </button>
       </div>
       <p className="text-silver text-[14px] mb-[24px]">

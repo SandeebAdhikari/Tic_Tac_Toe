@@ -60,6 +60,7 @@ const Game_Page = () => {
     if (gameWinner) {
       updateScores(gameWinner);
       setWinner(gameWinner);
+      setShowModal(true);
       return;
     }
 
